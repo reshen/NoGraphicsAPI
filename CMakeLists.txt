@@ -48,6 +48,11 @@ else()
     message(STATUS "Using Vulkan headers: ${Vulkan_INCLUDE_DIR}")
 endif()
 
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(XCB REQUIRED IMPORTED_TARGET xcb)
+endif()
+
 add_library(NoGraphicsAPI STATIC
     include/NoGraphicsAPI/types.h
     include/NoGraphicsAPI/span.hpp
@@ -69,6 +74,9 @@ if(APPLE)
     target_compile_options(NoGraphicsAPI PRIVATE -fno-objc-arc)
 else()
     target_link_libraries(NoGraphicsAPI PUBLIC Vulkan::Headers PRIVATE Vulkan::Vulkan)
+endif()
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    target_link_libraries(NoGraphicsAPI PRIVATE PkgConfig::XCB)
 endif()
 NoGraphicsAPI_disable_exceptions(NoGraphicsAPI)
 
