@@ -365,9 +365,12 @@ struct DeviceCaps
 
 // Windowed device creation/destruction, drawable queries, acquire, and presentation stay on the window's message-pump thread.
 // The window must outlive the device. Other calls follow the object-level threading contract below.
+// On Linux, display must additionally be set to the xcb_connection_t that owns
+// window.
 struct DeviceDesc
 {
-    void* window = nullptr;
+    void* window = nullptr;  // HWND on Windows; xcb_window_t cast to void* on Linux.
+    void* display = nullptr; // Unused on Windows; xcb_connection_t* on Linux.
     Format swapchain_format = Format::undefined;
     uint32 desired_swapchain_image_count = 2; // 1..8 presentation contexts.
     // Counts are capped to each family's capacity. A nonzero request requires that kind of queue to be available.

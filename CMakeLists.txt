@@ -34,6 +34,11 @@ find_package(Vulkan 1.4.357 REQUIRED)
 message(STATUS "Using Vulkan ${Vulkan_VERSION}: ${Vulkan_LIBRARY}")
 message(STATUS "Using Vulkan headers: ${Vulkan_INCLUDE_DIR}")
 
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(XCB REQUIRED IMPORTED_TARGET xcb)
+endif()
+
 add_library(NoGraphicsAPI STATIC
     include/NoGraphicsAPI/types.h
     include/NoGraphicsAPI/span.hpp
@@ -54,6 +59,9 @@ target_link_libraries(NoGraphicsAPI
     PUBLIC Vulkan::Headers
     PRIVATE Vulkan::Vulkan
 )
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    target_link_libraries(NoGraphicsAPI PRIVATE PkgConfig::XCB)
+endif()
 NoGraphicsAPI_disable_exceptions(NoGraphicsAPI)
 
 if(MSVC)
