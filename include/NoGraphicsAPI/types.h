@@ -32,7 +32,7 @@ static_assert(sizeof(int64) == 8 && sizeof(uint64) == 8 && sizeof(void*) == 8 &&
 
 namespace gpu
 {
-#if !defined(BUILDING_JAI_BINDINGS)
+#if FALSE
 // NOTE: Jai binding generation has trouble with namespace + using + these types
 // which causes critical code that uses them to be stripped. A simple work around
 // is to simply disable these. Both the c-library and jai bindings then use the
@@ -48,6 +48,6 @@ using ::uint64;
 using ::byte;
 using ::uintptr;
 using ::size_t;
-#endif // !defined(BUILDING_JAI_BINDINGS)
+#endif // FALSE
 inline constexpr size_t maximum_alignment = alignof(long double);
 } // namespace gpu
