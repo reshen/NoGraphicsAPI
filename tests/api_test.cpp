@@ -280,6 +280,8 @@ constexpr bool valid_texture_formats() noexcept
 }
 
 static_assert(texture_format_count == static_cast<uint8>(gpu::Format::undefined));
+#if !defined(BUILDING_JAI_BINDINGS)
+// NOTE: Disabled in jai binding since the API no longer provides a constant condition for static assertion
 static_assert(valid_texture_formats());
 static_assert(gpu::get_texture_format_info(gpu::Format::rgba8_unorm).bytes_per_block == 4);
 static_assert(gpu::get_texture_format_info(gpu::Format::astc_4x4_unorm).block_extent.x == 4);
@@ -290,6 +292,7 @@ static_assert(gpu::get_texture_format_info(gpu::Format::bc6h_sfloat).bytes_per_b
 static_assert(gpu::get_texture_format_info(gpu::Format::d24_unorm_s8_uint).depth);
 static_assert(gpu::get_texture_format_info(gpu::Format::d24_unorm_s8_uint).stencil);
 static_assert(gpu::get_texture_format_info(gpu::Format::undefined).bytes_per_block == 0);
+#endif // !defined(BUILDING_JAI_BINDINGS)
 
 static_assert(plain_api_data<gpu::uint32x2> && plain_api_data<gpu::uint32x3> &&
               plain_api_data<gpu::TextureFormatInfo> && plain_api_data<gpu::DeviceCaps> &&
@@ -491,7 +494,10 @@ static_assert(default_typed_cpu_range.cpu == nullptr && default_typed_cpu_range.
 static_assert(gpu::gpu_range(default_typed_cpu_range).gpu == nullptr && gpu::gpu_range(default_typed_cpu_range).size == 0);
 static_assert(default_size_align.size == 0 && default_size_align.align == 0);
 static_assert(default_heap.range.cpu == nullptr && default_heap.range.gpu == nullptr && default_heap.range.size == 0 && default_heap.owner == nullptr);
+#if !defined(BUILDING_JAI_BINDINGS)
+// NOTE: Disabled in jai binding since the API no longer provides a constant condition for static assertion
 static_assert(gpu::gpu_range(default_heap).gpu == nullptr && gpu::gpu_range(default_heap).size == 0);
+#endif // !defined(BUILDING_JAI_BINDINGS)
 static_assert(default_texture_heap.size == 0 && default_texture_heap.owner == nullptr);
 static_assert(default_timeline_point.semaphore == nullptr && default_timeline_point.value == 0);
 

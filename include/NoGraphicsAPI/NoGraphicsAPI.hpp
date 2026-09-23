@@ -160,93 +160,9 @@ struct TextureFormatInfo
     bool stencil = false;
 };
 
-[[nodiscard]] constexpr TextureFormatInfo get_texture_format_info(Format format) noexcept
-{
-    switch (format)
-    {
-    case Format::r8_srgb:
-    case Format::r8_unorm:
-    case Format::r8_uint:
-    case Format::s8_uint:
-        return {
-            .block_extent = {.x = 1, .y = 1},
-            .bytes_per_block = 1,
-            .depth = false,
-            .stencil = format == Format::s8_uint,
-        };
-    case Format::rg8_srgb:
-    case Format::rgba4_unorm:
-    case Format::r5g5b5a1_unorm:
-    case Format::r5g6b5_unorm:
-    case Format::rg8_unorm:
-    case Format::r16_unorm:
-    case Format::rg8_uint:
-    case Format::r16_uint:
-    case Format::r16_float:
-    case Format::d16_unorm:
-        return {
-            .block_extent = {.x = 1, .y = 1},
-            .bytes_per_block = 2,
-            .depth = format == Format::d16_unorm,
-            .stencil = false,
-        };
-    case Format::rgba8_srgb:
-    case Format::bgra8_srgb:
-    case Format::rgba8_unorm:
-    case Format::bgra8_unorm:
-    case Format::rg16_unorm:
-    case Format::rgba8_uint:
-    case Format::bgra8_uint:
-    case Format::rg16_uint:
-    case Format::r32_uint:
-    case Format::rg16_float:
-    case Format::r32_float:
-    case Format::rgb10a2_unorm:
-    case Format::rg11b10_float:
-    case Format::d24_unorm_s8_uint:
-    case Format::d32_float:
-        return {
-            .block_extent = {.x = 1, .y = 1},
-            .bytes_per_block = 4,
-            .depth = format == Format::d24_unorm_s8_uint || format == Format::d32_float,
-            .stencil = format == Format::d24_unorm_s8_uint,
-        };
-    case Format::rgba16_unorm:
-    case Format::rgba16_uint:
-    case Format::rg32_uint:
-    case Format::rgba16_float:
-    case Format::rg32_float:
-    case Format::d32_float_s8_uint:
-        return {
-            .block_extent = {.x = 1, .y = 1},
-            .bytes_per_block = 8,
-            .depth = format == Format::d32_float_s8_uint,
-            .stencil = format == Format::d32_float_s8_uint,
-        };
-    case Format::rgba32_uint:
-    case Format::rgba32_float:
-        return {
-            .block_extent = {.x = 1, .y = 1},
-            .bytes_per_block = 16,
-        };
-    case Format::eac_rg:
-    case Format::astc_4x4_srgb:
-    case Format::astc_4x4_unorm:
-    case Format::bc3_srgb:
-    case Format::bc3_unorm:
-    case Format::bc5_rg:
-    case Format::bc6h_ufloat:
-    case Format::bc6h_sfloat:
-    case Format::bc7_srgb:
-    case Format::bc7_unorm:
-        return {
-            .block_extent = {.x = 4, .y = 4},
-            .bytes_per_block = 16,
-        };
-    case Format::undefined: return {};
-    }
-    return {};
-}
+// NOTE: removed constexpr (to prevent inlining) and moved implementation to NoGraphicsAPI.cpp to ensure the built library exports the symbol
+// for c-binding
+[[nodiscard]] TextureFormatInfo get_texture_format_info(Format format) noexcept;
 
 enum class TextureType : uint8
 {
@@ -701,10 +617,9 @@ template<typename T>
     return {.gpu = range.gpu, .size = range.size};
 }
 
-[[nodiscard]] constexpr GpuRange gpu_range(const GpuHeap& heap) noexcept
-{
-    return gpu_range(heap.range);
-}
+// NOTE: removed constexpr (to prevent inlining) and moved implementation to NoGraphicsAPI.cpp to ensure the built library exports the symbol
+// for c-binding
+[[nodiscard]] GpuRange gpu_range(const GpuHeap& heap) noexcept;
 
 // Texture heaps use one device-selected GPU-only memory type and must outlive every placed texture.
 // Placements must satisfy get_texture_size_align(), remain non-overlapping, and not be reused before the timeline point covering their last use completes.
