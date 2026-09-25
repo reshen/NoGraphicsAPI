@@ -15,7 +15,7 @@
       "binaryDir": "${sourceDir}/build-msvc",
       "cacheVariables": {
         "NOGRAPHICSAPI_BUILD_EXAMPLES": true,
-        "NOGRAPHICSAPI_BUILD_TESTS": true
+        "NOGRAPHICSAPI_BUILD_TESTS": false
       }
     }
   ],
