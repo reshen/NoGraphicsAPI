@@ -120,8 +120,10 @@ if(WIN32)
     NoGraphicsAPI_disable_exceptions(test_presentation)
     target_link_libraries(test_presentation PRIVATE NoGraphicsAPI::NoGraphicsAPI)
     add_test(NAME test_presentation COMMAND test_presentation)
+    add_test(NAME test_presentation_scrgb COMMAND test_presentation --scrgb)
+    add_test(NAME test_presentation_color_space_switch COMMAND test_presentation --switch-color-space)
     add_test(NAME test_presentation_queue_families COMMAND test_presentation --queue-families)
-    set_tests_properties(test_presentation test_presentation_queue_families PROPERTIES
+    set_tests_properties(test_presentation test_presentation_scrgb test_presentation_color_space_switch test_presentation_queue_families PROPERTIES
         SKIP_RETURN_CODE 77 TIMEOUT 60 FAIL_REGULAR_EXPRESSION "NoGraphicsAPI validation:")
 endif()
 
@@ -130,6 +132,13 @@ NoGraphicsAPI_disable_exceptions(test_texture_copy)
 target_link_libraries(test_texture_copy PRIVATE NoGraphicsAPI::NoGraphicsAPI)
 add_test(NAME test_texture_copy COMMAND test_texture_copy)
 set_tests_properties(test_texture_copy PROPERTIES
+    SKIP_RETURN_CODE 77 TIMEOUT 60 FAIL_REGULAR_EXPRESSION "Validation Error;NoGraphicsAPI validation:")
+
+add_executable(test_texture_alias texture_alias_test.cpp)
+NoGraphicsAPI_disable_exceptions(test_texture_alias)
+target_link_libraries(test_texture_alias PRIVATE NoGraphicsAPI::NoGraphicsAPI)
+add_test(NAME test_texture_alias COMMAND test_texture_alias)
+set_tests_properties(test_texture_alias PROPERTIES
     SKIP_RETURN_CODE 77 TIMEOUT 60 FAIL_REGULAR_EXPRESSION "Validation Error;NoGraphicsAPI validation:")
 
 if(APPLE AND NOT CMAKE_SYSTEM_NAME STREQUAL "iOS")
@@ -277,3 +286,17 @@ target_link_libraries(test_shader_abi PRIVATE NoGraphicsAPI::NoGraphicsAPI NoGra
 target_compile_definitions(test_shader_abi PRIVATE NOGRAPHICSAPI_SHADER_ABI_PATH="${shader_abi_code}")
 add_test(NAME test_shader_abi COMMAND test_shader_abi)
 set_tests_properties(test_shader_abi PROPERTIES SKIP_RETURN_CODE 77 TIMEOUT 60 FAIL_REGULAR_EXPRESSION "Validation Error;NoGraphicsAPI validation:")
+
+if(NOT APPLE)
+    add_executable(test_startup_failures startup_failures_test.cpp ${queue_family_spv} ${continuation_vertex_spv} ${continuation_fragment_spv})
+    NoGraphicsAPI_disable_exceptions(test_startup_failures)
+    target_compile_features(test_startup_failures PRIVATE cxx_std_20)
+    target_include_directories(test_startup_failures PRIVATE ${PROJECT_SOURCE_DIR}/include)
+    target_link_libraries(test_startup_failures PRIVATE Vulkan::Vulkan NoGraphicsAPIUtility::uploads NoGraphicsAPIUtility::textures)
+    target_compile_definitions(test_startup_failures PRIVATE
+        NOGRAPHICSAPI_FAILURE_COMPUTE="${queue_family_spv}"
+        NOGRAPHICSAPI_FAILURE_VERTEX="${continuation_vertex_spv}"
+        NOGRAPHICSAPI_FAILURE_FRAGMENT="${continuation_fragment_spv}")
+    add_test(NAME test_startup_failures COMMAND test_startup_failures)
+    set_tests_properties(test_startup_failures PROPERTIES SKIP_RETURN_CODE 77 TIMEOUT 60 FAIL_REGULAR_EXPRESSION "Validation Error;NoGraphicsAPI validation:")
+endif()
