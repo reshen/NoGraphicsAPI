@@ -167,7 +167,7 @@ struct TextureFormatInfo
     bool stencil = false;
 };
 
-// NOTE: removed constexpr (to prevent inlining) and moved implementation to NoGraphicsAPI.cpp to ensure the built library exports the symbol
+// NOTE: removed constexpr (to prevent inlining) and moved implementation to NoGraphicsAPI.cpp/mm to ensure the built library exports the symbol
 // for c-binding
 [[nodiscard]] TextureFormatInfo get_texture_format_info(Format format) noexcept;
 
@@ -643,7 +643,7 @@ template<typename T>
     return {.gpu = range.gpu, .size = range.size};
 }
 
-// NOTE: removed constexpr (to prevent inlining) and moved implementation to NoGraphicsAPI.cpp to ensure the built library exports the symbol
+// NOTE: removed constexpr (to prevent inlining) and moved implementation to NoGraphicsAPI.cpp/mm to ensure the built library exports the symbol
 // for c-binding
 [[nodiscard]] GpuRange gpu_range(const GpuHeap& heap) noexcept;
 
