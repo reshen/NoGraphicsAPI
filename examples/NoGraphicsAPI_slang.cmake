@@ -6,7 +6,7 @@ if(APPLE)
 else()
     find_program(NOGRAPHICSAPI_SPIRV_VAL NAMES spirv-val REQUIRED)
     set(NOGRAPHICSAPI_SHADER_EXTENSION spv CACHE INTERNAL "Native shader artifact extension" FORCE)
-    set(NOGRAPHICSAPI_SLANG_MINIMUM 2026.14.1)
+    set(NOGRAPHICSAPI_SLANG_MINIMUM 2026.13.1)
 endif()
 
 function(NoGraphicsAPI_require_tool_version program argument name minimum pattern)
