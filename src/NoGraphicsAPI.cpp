@@ -1840,7 +1840,7 @@ DeviceInit create_device(const DeviceDesc& desc) noexcept
             .connection = static_cast<xcb_connection_t*>(desc.display),
             .window = static_cast<xcb_window_t>(reinterpret_cast<uintptr_t>(desc.window)),
         };
-        error = error_from_vk(vkCreateXcbSurfaceKHR(state->instance, &surface_info, nullptr, &state->surface));
+        error = error_from_vk(vkCreateXcbSurfaceKHR(state->instance, &surface_info, nullptr, &state->surface), "vkCreateXcbSurfaceKHR");
         if (error != Error::none)
             return fail_device_creation(state, error);
     }
