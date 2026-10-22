@@ -1763,7 +1763,11 @@ DeviceInit create_device(const DeviceDesc& desc) noexcept
         uint32 missing_extension_count = 0;
         constexpr const char* required_extensions[]{
             VK_KHR_SURFACE_EXTENSION_NAME,
+#if defined(_WIN32)
             VK_KHR_WIN32_SURFACE_EXTENSION_NAME,
+#elif defined(__linux__)
+            VK_KHR_XCB_SURFACE_EXTENSION_NAME,
+#endif
             VK_KHR_GET_SURFACE_CAPABILITIES_2_EXTENSION_NAME,
         };
         for (const char* name : required_extensions)
