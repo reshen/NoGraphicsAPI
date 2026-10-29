@@ -1655,8 +1655,13 @@ void begin_render_pass(CommandBuffer* commands, const RenderingDesc& desc, Rende
         if ((static_cast<uint32>(flags) & static_cast<uint32>(RenderingFlags::resuming)) != 0) options |= MTL4RenderEncoderOptionResuming;
         commands->render = [[native_commands(commands) renderCommandEncoderWithDescriptor:commands->pass options:options] retain];
         [commands->render setArgumentTable:commands->arguments atStages:render_stages];
-        [commands->render setFrontFacingWinding:MTLWindingCounterClockwise];
-        [commands->render setViewport:MTLViewport{0, double(height ? height : 1), double(width ? width : 1), -double(height ? height : 1), 0, 1}];
+        if (desc.metal_y_up_viewport) {
+            [commands->render setFrontFacingWinding:MTLWindingClockwise];
+            [commands->render setViewport:MTLViewport{0, 0, double(width ? width : 1), double(height ? height : 1), 0, 1}];
+        } else {
+            [commands->render setFrontFacingWinding:MTLWindingCounterClockwise];
+            [commands->render setViewport:MTLViewport{0, double(height ? height : 1), double(width ? width : 1), -double(height ? height : 1), 0, 1}];
+        }
         [commands->render setScissorRect:MTLScissorRect{0, 0, width ? width : 1, height ? height : 1}];
         [commands->render setDepthStencilState:depth_state(commands->pool, {})];
         commands->pso = nullptr;
